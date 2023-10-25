@@ -5,8 +5,10 @@ import com.springboot.dto.PostDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -32,4 +34,9 @@ public class Post {
         this.content = post.getContent();
     }
 
+    public void update(PostDto postDto) {
+        this.title = postDto.getTitle();
+        this.description = postDto.getDescription();
+        this.content = postDto.getContent();
+    }
 }

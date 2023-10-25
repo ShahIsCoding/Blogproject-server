@@ -53,9 +53,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto updatePostById(PostDto postDto, String id) {
         Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post","id",id));
-        post.setTitle(postDto.getTitle());
-        post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
+        post.update(postDto);
         Post updatedPost = postRepository.save(post);
         return mapToDTO(updatedPost);
     }
