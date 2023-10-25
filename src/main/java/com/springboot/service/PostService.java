@@ -1,6 +1,7 @@
 package com.springboot.service;
 
 import com.springboot.dto.PostDto;
+import com.springboot.dto.PostResponseDto;
 import com.springboot.model.Post;
 import com.springboot.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import java.util.List;
 public interface PostService {
     PostDto createPost(PostDto postDto);
 
-    List<PostDto> getAllPosts();
+    PostResponseDto getAllPosts(int pageNo, int pageSize);
 
     PostDto getPostById(String id);
 

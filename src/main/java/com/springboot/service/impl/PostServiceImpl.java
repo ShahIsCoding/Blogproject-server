@@ -1,14 +1,17 @@
 package com.springboot.service.impl;
 
 import com.springboot.dto.PostDto;
+import com.springboot.dto.PostResponseDto;
 import com.springboot.exception.ResourceNotFoundException;
 import com.springboot.model.Post;
 import com.springboot.repository.PostRepository;
 import com.springboot.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,17 +22,23 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto createPost(PostDto postDto) {
         // convert dto to model
-        Post post = mapToModel(postDto);
+        int length = postRepository.findAll().size();
+        Post post = mapToModel(postDto,length);
         postRepository.save(post);
         return mapToDTO(post);
     }
 
     @Override
-    public List<PostDto> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
-        return posts.stream()
+    public PostResponseDto getAllPosts(int pageNo,int pageSize) {
+        Pageable pageable =  PageRequest.of(pageNo,pageSize);
+        Page<Post> posts = postRepository.findAll((org.springframework.data.domain.Pageable) pageable);
+
+        List<Post> listOfPosts = posts.getContent();
+        List<PostDto> content = listOfPosts.stream()
                 .map(post -> mapToDTO(post))
                 .collect(Collectors.toList());
+        PostResponseDto postResponse = new PostResponseDto(content,posts);
+        return postResponse;
     }
 
     @Override
@@ -62,5 +71,7 @@ public class PostServiceImpl implements PostService {
     private Post mapToModel(PostDto post){
         return new Post(post);
     }
-
+    private Post mapToModel(PostDto post,int length){
+        return new Post(post,length);
+    }
 }

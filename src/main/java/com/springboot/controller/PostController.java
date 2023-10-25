@@ -1,6 +1,7 @@
 package com.springboot.controller;
 
 import com.springboot.dto.PostDto;
+import com.springboot.dto.PostResponseDto;
 import com.springboot.model.Post;
 import com.springboot.service.PostService;
 import com.springboot.service.impl.PostServiceImpl;
@@ -24,9 +25,17 @@ public class PostController {
         PostDto post = postService.createPost(postDto);
         return new ResponseEntity<>(post, HttpStatus.CREATED);
     }
+    @PostMapping("all")
+    public ResponseEntity<String> uploadPosts(@RequestBody List<PostDto> postDtoList){
+        postDtoList.forEach(postDto -> postService.createPost(postDto));
+        return new ResponseEntity<>("done",HttpStatus.CREATED);
+    }
     @GetMapping
-    public ResponseEntity<List<PostDto> > getAllPost(){
-        List<PostDto> posts = postService.getAllPosts();
+    public ResponseEntity<PostResponseDto > getAllPost(
+            @RequestParam(value = "pageNo",defaultValue = "0",required = false) int pageNo,
+            @RequestParam(value = "pageSize",defaultValue = "10",required = false) int pageSize){
+
+        PostResponseDto posts = postService.getAllPosts(pageNo,pageSize);
         return new ResponseEntity<>(posts,HttpStatus.OK);
     }
     @GetMapping("/{id}")

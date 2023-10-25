@@ -25,6 +25,11 @@ public class Post {
         this.description = post.getDescription();
         this.content = post.getContent();
     }
-
+    public Post(PostDto post,int length) {
+        this.id = constant.BLOG+":"+constant.POST+":"+length+":"+ UUID.randomUUID().toString();
+        this.title = post.getTitle();
+        this.description = post.getDescription();
+        this.content = post.getContent();
+    }
 
 }
