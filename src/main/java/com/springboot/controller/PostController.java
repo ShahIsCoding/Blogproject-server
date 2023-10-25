@@ -1,5 +1,6 @@
 package com.springboot.controller;
 
+import com.springboot.constants.constant;
 import com.springboot.dto.PostDto;
 import com.springboot.dto.PostResponseDto;
 import com.springboot.model.Post;
@@ -32,10 +33,12 @@ public class PostController {
     }
     @GetMapping
     public ResponseEntity<PostResponseDto > getAllPost(
-            @RequestParam(value = "pageNo",defaultValue = "0",required = false) int pageNo,
-            @RequestParam(value = "pageSize",defaultValue = "10",required = false) int pageSize){
-
-        PostResponseDto posts = postService.getAllPosts(pageNo,pageSize);
+            @RequestParam(value = "pageNo",defaultValue = constant.DEFAULT_PAGE_NUMBER,required = false) int pageNo,
+            @RequestParam(value = "pageSize",defaultValue = constant.DEFAULT_PAGE_SIZE,required = false) int pageSize,
+            @RequestParam(value = "sortBy",defaultValue = constant.DEFAULT_SORT_BY,required = false) String sortBy,
+            @RequestParam(value = "sortDir",defaultValue = constant.DEFAULT_SORT_DIRECTION,required = false) String sortDir
+        ){
+        PostResponseDto posts = postService.getAllPosts(pageNo,pageSize,sortBy,sortDir);
         return new ResponseEntity<>(posts,HttpStatus.OK);
     }
     @GetMapping("/{id}")
