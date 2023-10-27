@@ -22,8 +22,8 @@ public class Comment {
     private String body;
     private String postId;
 
-    public Comment(CommentDTO comment){
-        this.id = BlogConstant.BLOG+":"+ BlogConstant.COMMENT+"="+ UUID.randomUUID().toString();
+    public Comment(CommentDTO comment) {
+        this.id = BlogConstant.BLOG + ":" + BlogConstant.COMMENT + "=" + UUID.randomUUID();
         this.timestamp = new Date();
         this.name = comment.getName();
         this.email = comment.getEmail();

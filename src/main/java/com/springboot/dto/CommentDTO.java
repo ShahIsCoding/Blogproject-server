@@ -17,7 +17,7 @@ public class CommentDTO {
     private String email;
     private String body;
 
-    public CommentDTO(Comment comment){
+    public CommentDTO(Comment comment) {
         this.id = comment.getId();
         this.name = comment.getName();
         this.email = comment.getEmail();

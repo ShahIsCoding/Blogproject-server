@@ -10,11 +10,11 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostWithCommentsDTO extends PostDTO{
+public class PostWithCommentsDTO extends PostDTO {
     private List<CommentDTO> comments;
 
     public PostWithCommentsDTO(PostDTO postDTO, List<CommentDTO> commentDTOList) {
         super(postDTO);
-        this.comments= commentDTOList;
+        this.comments = commentDTOList;
     }
 }

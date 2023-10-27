@@ -20,13 +20,14 @@ public class Post {
     private String content;
 
     public Post(PostDTO post) {
-        this.id = BlogConstant.BLOG+":"+ BlogConstant.POST+"="+ UUID.randomUUID().toString();
+        this.id = BlogConstant.BLOG + ":" + BlogConstant.POST + "=" + UUID.randomUUID();
         this.title = post.getTitle();
         this.description = post.getDescription();
         this.content = post.getContent();
     }
+
     public Post(PostDTO post, int length) {
-        this.id = BlogConstant.BLOG+":"+ BlogConstant.POST+":"+length+":"+ UUID.randomUUID().toString();
+        this.id = BlogConstant.BLOG + ":" + BlogConstant.POST + ":" + length + ":" + UUID.randomUUID();
         this.title = post.getTitle();
         this.description = post.getDescription();
         this.content = post.getContent();

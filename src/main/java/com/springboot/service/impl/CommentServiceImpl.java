@@ -21,27 +21,27 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepo;
     @Autowired
     private PostRepository postRepository;
+
     @Override
     public List<CommentDTO> getCommentsByPostId(String postId) {
-        if(!postRepository.existsById(postId)) new ResourceNotFoundException("Post","Id",postId);
+        if (!postRepository.existsById(postId)) new ResourceNotFoundException("Post", "Id", postId);
         List<Comment> commentList = commentRepo.findAllByPostId(postId);
-        List<CommentDTO> commentDTOList = commentList.stream()
-                .map(comment -> mapToDTO(comment))
-                .collect(Collectors.toList());
+        List<CommentDTO> commentDTOList = commentList.stream().map(comment -> mapToDTO(comment)).collect(Collectors.toList());
         return commentDTOList;
     }
 
     @Override
     public CommentDTO getCommentById(String commentId, String postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post","Id",postId) );
-        Comment comment = commentRepo.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment","Id",commentId) );
-        if(comment.getPostId().equals(postId)) new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post");
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "Id", postId));
+        Comment comment = commentRepo.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "Id", commentId));
+        if (comment.getPostId().equals(postId))
+            new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post");
         return mapToDTO(comment);
     }
 
     @Override
     public void createComment(CommentDTO commentDto, String postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post","Id",postId) );
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "Id", postId));
         Comment comment = mapToModel(commentDto);
         comment.setPostId(post.getId());
         commentRepo.save(comment);
@@ -49,8 +49,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO updateComment(String commentId, String postId, CommentDTO commentDto) {
-        if(!postRepository.existsById(postId)) new ResourceNotFoundException("Post","Id",postId);
-        Comment comment = commentRepo.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment","Id",commentId) );
+        if (!postRepository.existsById(postId)) new ResourceNotFoundException("Post", "Id", postId);
+        Comment comment = commentRepo.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "Id", commentId));
         comment.update(commentDto);
         Comment updatedComment = commentRepo.save(comment);
         return mapToDTO(updatedComment);
@@ -58,16 +58,18 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public void deleteComment(String commentId, String postId) {
-        if(!postRepository.existsById(postId)) new ResourceNotFoundException("Post","Id",postId);
-        Comment comment = commentRepo.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment","Id",commentId) );
-        if(comment.getPostId().equals(postId)) new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post");
+        if (!postRepository.existsById(postId)) new ResourceNotFoundException("Post", "Id", postId);
+        Comment comment = commentRepo.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "Id", commentId));
+        if (comment.getPostId().equals(postId))
+            new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post");
         commentRepo.deleteById(commentId);
     }
 
-    private CommentDTO mapToDTO(Comment comment){
+    private CommentDTO mapToDTO(Comment comment) {
         return new CommentDTO(comment);
     }
-    private Comment mapToModel(CommentDTO commentDto){
+
+    private Comment mapToModel(CommentDTO commentDto) {
         return new Comment(commentDto);
     }
 }
