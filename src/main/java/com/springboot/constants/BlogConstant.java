@@ -3,7 +3,7 @@ package com.springboot.constants;
 import lombok.Getter;
 
 @Getter
-public class constant {
+public class BlogConstant {
     public static final String BLOG = "blog";
     public static final String POST = "post";
     public static final String COMMENT = "comment";

@@ -1,6 +1,5 @@
 package com.springboot.repository;
 
-import com.springboot.dto.CommentDto;
 import com.springboot.model.Comment;
 import org.springframework.data.mongodb.repository.MongoRepository;
 

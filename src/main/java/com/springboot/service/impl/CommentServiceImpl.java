@@ -1,6 +1,6 @@
 package com.springboot.service.impl;
 
-import com.springboot.dto.CommentDto;
+import com.springboot.dto.CommentDTO;
 import com.springboot.exception.BlogAPIException;
 import com.springboot.exception.ResourceNotFoundException;
 import com.springboot.model.Comment;
@@ -22,17 +22,17 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private PostRepository postRepository;
     @Override
-    public List<CommentDto> getCommentsByPostId(String postId) {
+    public List<CommentDTO> getCommentsByPostId(String postId) {
         if(!postRepository.existsById(postId)) new ResourceNotFoundException("Post","Id",postId);
         List<Comment> commentList = commentRepo.findAllByPostId(postId);
-        List<CommentDto> commentDtoList = commentList.stream()
+        List<CommentDTO> commentDTOList = commentList.stream()
                 .map(comment -> mapToDTO(comment))
                 .collect(Collectors.toList());
-        return commentDtoList;
+        return commentDTOList;
     }
 
     @Override
-    public CommentDto getCommentById(String commentId, String postId) {
+    public CommentDTO getCommentById(String commentId, String postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post","Id",postId) );
         Comment comment = commentRepo.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment","Id",commentId) );
         if(comment.getPostId().equals(postId)) new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post");
@@ -40,7 +40,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void createComment(CommentDto commentDto, String postId) {
+    public void createComment(CommentDTO commentDto, String postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post","Id",postId) );
         Comment comment = mapToModel(commentDto);
         comment.setPostId(post.getId());
@@ -48,7 +48,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDto updateComment(String commentId, String postId, CommentDto commentDto) {
+    public CommentDTO updateComment(String commentId, String postId, CommentDTO commentDto) {
         if(!postRepository.existsById(postId)) new ResourceNotFoundException("Post","Id",postId);
         Comment comment = commentRepo.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment","Id",commentId) );
         comment.update(commentDto);
@@ -64,10 +64,10 @@ public class CommentServiceImpl implements CommentService {
         commentRepo.deleteById(commentId);
     }
 
-    private CommentDto mapToDTO(Comment comment){
-        return new CommentDto(comment);
+    private CommentDTO mapToDTO(Comment comment){
+        return new CommentDTO(comment);
     }
-    private Comment mapToModel(CommentDto commentDto){
+    private Comment mapToModel(CommentDTO commentDto){
         return new Comment(commentDto);
     }
 }

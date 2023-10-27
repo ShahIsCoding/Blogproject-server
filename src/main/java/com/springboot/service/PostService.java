@@ -1,22 +1,19 @@
 package com.springboot.service;
 
-import com.springboot.dto.PostDto;
-import com.springboot.dto.PostResponseDto;
-import com.springboot.model.Post;
-import com.springboot.repository.PostRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.springboot.dto.Post.PostDTO;
+import com.springboot.dto.Post.PostResponseDTO;
+import com.springboot.dto.Post.PostWithCommentsDTO;
 
 public interface PostService {
-    PostDto createPost(PostDto postDto);
+    PostDTO createPost(PostDTO postDto);
 
-    PostResponseDto getAllPosts(int pageNo, int pageSize,String sortBy,String sortDir);
+    PostResponseDTO getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir);
 
-    PostDto getPostById(String id);
+    PostDTO getPostById(String id);
 
-    PostDto updatePostById(PostDto postDto, String id);
+    PostDTO updatePostById(PostDTO postDto, String id);
 
     void deletePostById(String id);
+
+    PostWithCommentsDTO getPostWithComments(String id);
 }

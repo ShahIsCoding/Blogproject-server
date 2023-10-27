@@ -1,14 +1,12 @@
 package com.springboot.model;
 
-import com.springboot.constants.constant;
-import com.springboot.dto.PostDto;
+import com.springboot.constants.BlogConstant;
+import com.springboot.dto.Post.PostDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -21,20 +19,20 @@ public class Post {
     private String description;
     private String content;
 
-    public Post(PostDto post) {
-        this.id = constant.BLOG+":"+constant.POST+"="+ UUID.randomUUID().toString();
+    public Post(PostDTO post) {
+        this.id = BlogConstant.BLOG+":"+ BlogConstant.POST+"="+ UUID.randomUUID().toString();
         this.title = post.getTitle();
         this.description = post.getDescription();
         this.content = post.getContent();
     }
-    public Post(PostDto post,int length) {
-        this.id = constant.BLOG+":"+constant.POST+":"+length+":"+ UUID.randomUUID().toString();
+    public Post(PostDTO post, int length) {
+        this.id = BlogConstant.BLOG+":"+ BlogConstant.POST+":"+length+":"+ UUID.randomUUID().toString();
         this.title = post.getTitle();
         this.description = post.getDescription();
         this.content = post.getContent();
     }
 
-    public void update(PostDto postDto) {
+    public void update(PostDTO postDto) {
         this.title = postDto.getTitle();
         this.description = postDto.getDescription();
         this.content = postDto.getContent();

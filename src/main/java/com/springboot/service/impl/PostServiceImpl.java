@@ -1,9 +1,13 @@
 package com.springboot.service.impl;
 
-import com.springboot.dto.PostDto;
-import com.springboot.dto.PostResponseDto;
+import com.springboot.dto.CommentDTO;
+import com.springboot.dto.Post.PostDTO;
+import com.springboot.dto.Post.PostResponseDTO;
+import com.springboot.dto.Post.PostWithCommentsDTO;
 import com.springboot.exception.ResourceNotFoundException;
+import com.springboot.model.Comment;
 import com.springboot.model.Post;
+import com.springboot.repository.CommentRepository;
 import com.springboot.repository.PostRepository;
 import com.springboot.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +24,10 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private CommentRepository commentRepository;
     @Override
-    public PostDto createPost(PostDto postDto) {
+    public PostDTO createPost(PostDTO postDto) {
         // convert dto to model
         int length = postRepository.findAll().size();
         Post post = mapToModel(postDto,length);
@@ -30,28 +36,28 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponseDto getAllPosts(int pageNo,int pageSize,String sortBy,String sortDir) {
+    public PostResponseDTO getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir) {
 //        Pageable pageable =  PageRequest.of(pageNo,pageSize); for only pagination
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())?Sort.by(sortBy).ascending():Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo,pageSize, sort); // for pagination and sorting
         Page<Post> posts = postRepository.findAll(pageable);
 
         List<Post> listOfPosts = posts.getContent();
-        List<PostDto> content = listOfPosts.stream()
+        List<PostDTO> content = listOfPosts.stream()
                 .map(post -> mapToDTO(post))
                 .collect(Collectors.toList());
-        PostResponseDto postResponse = new PostResponseDto(content,posts);
+        PostResponseDTO postResponse = new PostResponseDTO(content,posts);
         return postResponse;
     }
 
     @Override
-    public PostDto getPostById(String id) {
+    public PostDTO getPostById(String id) {
         Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post","id",id));
         return mapToDTO(post);
     }
 
     @Override
-    public PostDto updatePostById(PostDto postDto, String id) {
+    public PostDTO updatePostById(PostDTO postDto, String id) {
         Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post","id",id));
         post.update(postDto);
         Post updatedPost = postRepository.save(post);
@@ -64,15 +70,25 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(post);
     }
 
-    // convert model to DTO
-    private PostDto mapToDTO(Post post){
-        return new PostDto(post);
+    @Override
+    public PostWithCommentsDTO getPostWithComments(String id) {
+        Post post = postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post","id",id));
+        List<Comment> commentList = commentRepository.findAllByPostId(id);
+        List<CommentDTO> commentDTOList = commentList.stream().map(comment -> mapToCommentDTO(comment)).collect(Collectors.toList());
+        PostDTO postDTO = mapToDTO(post);
+        PostWithCommentsDTO responsePost = new PostWithCommentsDTO(postDTO,commentDTOList);
+        return responsePost;
     }
 
-    private Post mapToModel(PostDto post){
-        return new Post(post);
+    // convert model to DTO
+    private PostDTO mapToDTO(Post post){
+        return new PostDTO(post);
     }
-    private Post mapToModel(PostDto post,int length){
+
+    private CommentDTO mapToCommentDTO(Comment comment){
+        return new CommentDTO(comment);
+    }
+    private Post mapToModel(PostDTO post, int length){
         return new Post(post,length);
     }
 }
